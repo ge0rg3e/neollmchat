@@ -1,0 +1,10 @@
+frontend/vite-env.d.ts
+package-lock.json
+yarn-debug.log*
+yarn-error.log*
+npm-debug.log*
+/node_modules
+**/*.bun
+/build
+/data
+.env
