@@ -2,6 +2,7 @@ import { cors } from '@elysiajs/cors';
 import { Elysia } from 'elysia';
 
 // Services
+import transcribeService from './services/transcribe';
 import frontendService from './services/frontend';
 import modelsService from './services/models';
 import chatService from './services/chat';
@@ -19,6 +20,7 @@ const app = new Elysia()
 	.use(syncService)
 	.use(frontendService)
 	.use(chatService)
+	.use(transcribeService)
 	.use(modelsService)
 	.use(authService)
 	.listen(8608);

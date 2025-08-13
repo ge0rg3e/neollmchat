@@ -1,6 +1,6 @@
-import { llmRequest, type LLMResponse } from './llm-api';
 import { decryptContent } from '../content-encryption';
 import type { Message } from '~frontend/lib/types';
+import { logError } from '~server/helpers';
 import { v4 as uuid } from 'uuid';
 import db from '../database';
 
@@ -28,8 +28,8 @@ export const saveMessages = async (chatId: string, messages: Message[], content:
 	const updatedMessages = [...messages, { id: uuid(), role: 'assistant' as const, content, attachments: [], modelId }];
 	try {
 		await db.chat.update({ where: { id: chatId }, data: { messages: updatedMessages } });
-	} catch (error) {
-		console.error('Error saving messages:', error);
+	} catch (err) {
+		logError('Error saving messages', err);
 	}
 };
 
@@ -39,10 +39,4 @@ export const getModel = async (modelId: string) => {
 
 	const decryptedApiKey = (await decryptContent(model.apiKey)) as string;
 	return { id: model.id, model: model.model, provider: model.provider, apiUrl: model.apiUrl, decryptedApiKey };
-};
-
-export type SearchResult = {
-	url: string;
-	title: string;
-	content: string;
 };

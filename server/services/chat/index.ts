@@ -1,4 +1,4 @@
-import { getModel, getOrCreateChat, saveMessages, SearchResult, sseEvent, SYSTEM_PROMPT } from './helpers';
+import { getOrCreateChat, saveMessages, sseEvent, SYSTEM_PROMPT } from './helpers';
 import { llmRequest, LLMResponse, type LLMStreamResponse } from './llm-api';
 import { chatPost, deleteChat, generateTitle } from './schema';
 import type { Chat } from '~frontend/lib/types';
@@ -8,23 +8,6 @@ import Elysia from 'elysia';
 
 const chatService = new Elysia({ prefix: '/api' })
 	.use(authPlugin)
-	.get('/test', async function* ({ status }) {
-		const abortController = new AbortController();
-
-		const { data, error } = await llmRequest({
-			modelId: '998a3ce8-fdfb-461b-8ef6-aee29e9fb886',
-			messages: [{ role: 'user', content: 'Hello, how are you?' }],
-			stream: true,
-			abortController
-		});
-
-		if (error) return status(500, error);
-
-		for await (const chunk of data as LLMStreamResponse) {
-			console.log({ chunk });
-			yield chunk;
-		}
-	})
 	.post(
 		'/chat',
 		async function* ({ body, request, user }) {

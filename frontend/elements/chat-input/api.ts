@@ -12,7 +12,7 @@ const useChatApi = () => {
 	const { id: chatId } = useParams();
 	const chats = useLiveQuery(() => db.chats.toArray());
 	const activeRequests = useLiveQuery(() => db.activeRequests.toArray());
-	const { abortControllers, setAbortControllers, selectedModel, chatInput, setChatInput, session } = useApp();
+	const { abortControllers, setAbortControllers, settings, chatInput, setChatInput, session } = useApp();
 
 	const createNewChat = async () => {
 		const newChatId = uuid();
@@ -33,7 +33,7 @@ const useChatApi = () => {
 		const input = chatInput.text.trim();
 		const attachments = chatInput.attachments;
 
-		if (!input || !selectedModel) return;
+		if (!input || !settings.selectedModel) return;
 
 		// Get or create chat
 		let targetChatId: string;
@@ -65,7 +65,10 @@ const useChatApi = () => {
 		setAbortControllers((prev) => [...prev, { requestId, controller: abortController }]);
 
 		try {
-			const response = await apiClient.chat.post({ chatId: targetChatId, requestId, model: { id: selectedModel.id }, messages: updatedMessages }, { fetch: { signal: abortController.signal } });
+			const response = await apiClient.chat.post(
+				{ chatId: targetChatId, requestId, model: { id: settings.selectedModel.id }, messages: updatedMessages },
+				{ fetch: { signal: abortController.signal } }
+			);
 			if (!response.data) return;
 
 			// Process streaming response
@@ -125,7 +128,7 @@ const useChatApi = () => {
 
 		try {
 			const chat = chats?.find((c) => c.id === chatId);
-			if (!chat || !selectedModel) return;
+			if (!chat || !settings.selectedModel) return;
 
 			const messageIndex = chat.messages.findIndex((m) => m.id === messageId);
 			if (messageIndex === -1) return;
@@ -148,7 +151,7 @@ const useChatApi = () => {
 					{
 						chatId,
 						requestId,
-						model: { id: selectedModel.id },
+						model: { id: settings.selectedModel.id },
 						messages: messagesToKeep
 					},
 					{ fetch: { signal: abortController.signal } }
@@ -193,7 +196,7 @@ const useChatApi = () => {
 
 		try {
 			const chat = chats?.find((c) => c.id === chatId);
-			if (!chat || !selectedModel) return;
+			if (!chat || !settings.selectedModel) return;
 
 			const messageIndex = chat.messages.findIndex((m) => m.id === messageId);
 			if (messageIndex === -1) return;
@@ -220,7 +223,7 @@ const useChatApi = () => {
 					{
 						chatId,
 						requestId,
-						model: { id: selectedModel.id },
+						model: { id: settings.selectedModel.id },
 						messages: messagesToKeep
 					},
 					{ fetch: { signal: abortController.signal } }
@@ -261,7 +264,7 @@ const useChatApi = () => {
 	};
 
 	const generateTitle = async (chatId: string, messages: Message[]) => {
-		const { data } = await apiClient.chat.generateTitle.post({ chatId, modelId: selectedModel!.id, messages });
+		const { data } = await apiClient.chat.generateTitle.post({ chatId, modelId: settings.selectedModel!.id, messages });
 		if (!data) return;
 
 		await db.chats.update(chatId, { title: data.title });

@@ -1,7 +1,13 @@
-export type Appearance = {
-	theme: 'dark' | 'light';
-	sidebarSide: 'left' | 'right';
-	sidebarClosed: boolean;
+type NullOrUndefined<T> = T | null | undefined;
+
+export type Settings = {
+	appearance: {
+		theme: 'dark' | 'light';
+		sidebarSide: 'left' | 'right';
+		sidebarClosed: boolean;
+	};
+	transcribeLanguage: string;
+	selectedModel: Model;
 };
 
 export type ActiveRequest = {
@@ -37,14 +43,11 @@ export type Chat = {
 	createdAt: Date;
 };
 
-export type Session =
-	| {
-			id: string;
-			username: string;
-			role: 'admin' | 'user';
-	  }
-	| null
-	| undefined;
+export type Session = NullOrUndefined<{
+	id: string;
+	username: string;
+	role: 'admin' | 'user';
+}>;
 
 export type ChatInput = {
 	text: string;

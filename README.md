@@ -2,6 +2,8 @@
 
 **NeoLLMChat** is a self-hosted chat interface for large language models, built with **React** and **ElysiaJS**. It supports multiple LLM providers, includes user authentication, and offers a fast, clean interface for chatting and managing conversations.
 
+[Track progress on the GitHub Project board](https://github.com/users/ge0rg3e/projects/1/views/1)
+
 ---
 
 ## Features
@@ -16,6 +18,7 @@
 -   [x] Syntax highlighting for code
 -   [x] Regenerate messages
 -   [x] Export Chat (PDF, Markdown, Plain Text)
+-   [x] Transcribe audio to text (Powered by [Faster Whisper](https://github.com/SYSTRAN/faster-whisper))
 
 ---
 
@@ -28,12 +31,15 @@ services:
     neollmchat:
         image: ghcr.io/ge0rg3e/neollmchat:latest
         container_name: neollmchat
+        network_mode: host
         ports:
             - 8608:8608
         environment:
             - DATABASE_URL=mongodb://root:{PASSWORD}@mongodb:27017/
             - CONTENT_ENCRYPTION_KEY=your_encryption_key_here
             - JWT_SECRET=your_jwt_secret_here
+            - WHISPER_DEVICE= # "cpu" | "cuda" Default: "cpu" - Required for Transcribe feature
+            - WHISPER_MODEL= # "tiny" | "base" | "small" | "medium" | "large" | "turbo" Default: "small" - Required for Transcribe feature
         restart: always
 
     mongodb:

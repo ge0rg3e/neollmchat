@@ -2,6 +2,8 @@ import { staticPlugin } from '@elysiajs/static';
 import { Elysia } from 'elysia';
 import { join } from 'path';
 
+const PATH = Bun.env.NODE_ENV === 'production' ? './frontend' : './build/frontend';
+
 const getMimeType = (path: string): string => {
 	if (path.endsWith('.js') || path.endsWith('.mjs')) return 'application/javascript';
 	if (path.endsWith('.css')) return 'text/css';
@@ -15,7 +17,7 @@ const getMimeType = (path: string): string => {
 };
 
 const assetsRoute = async ({ path, set }: any) => {
-	const filePath = join('./build/frontend', path.replace('/', ''));
+	const filePath = join(PATH, path.replace('/', ''));
 	const file = Bun.file(filePath);
 
 	if (await file.exists()) {
@@ -30,7 +32,7 @@ const assetsRoute = async ({ path, set }: any) => {
 const frontendService = new Elysia()
 	.use(
 		staticPlugin({
-			assets: './build/frontend',
+			assets: PATH,
 			indexHTML: false,
 			prefix: '/'
 		})
@@ -53,7 +55,7 @@ const frontendService = new Elysia()
 		}
 
 		try {
-			const indexPath = join('./build/frontend', 'index.html');
+			const indexPath = join(PATH, 'index.html');
 			const indexContent = await Bun.file(indexPath).text();
 			set.headers['Content-Type'] = 'text/html';
 			return new Response(indexContent);

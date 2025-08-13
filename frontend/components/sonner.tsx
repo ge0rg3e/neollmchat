@@ -4,12 +4,12 @@ import { Toaster as Sonner, type ToasterProps } from 'sonner';
 import { useApp } from '~frontend/lib/context';
 
 const Toaster = ({ ...props }: ToasterProps) => {
-	const { appearance } = useApp();
+	const { settings } = useApp();
 
 	return (
 		<Sonner
 			className="toaster group"
-			theme={appearance.theme}
+			theme={settings.appearance.theme}
 			style={
 				{
 					'--normal-bg': 'var(--popover)',

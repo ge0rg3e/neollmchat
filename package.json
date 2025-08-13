@@ -1,15 +1,15 @@
 {
 	"name": "neollmchat",
-	"version": "0.0.5",
+	"version": "0.0.2",
 	"author": "Ge0rg3e",
 	"module": "src/index.js",
 	"license": "CUSTOM",
 	"scripts": {
+		"build": "bun build server/index.ts --compile --outfile build/app --bundle --global && bunx vite build && cp -r node_modules/.prisma ./build/.prisma",
 		"docker:build": "docker build -t ghcr.io/ge0rg3e/neollmchat:latest .",
 		"docker:push": "docker push ghcr.io/ge0rg3e/neollmchat:latest",
 		"dev": "bun run --watch server/index.ts",
 		"db:generate": "bunx prisma generate",
-		"ui:build": "bunx vite build",
 		"ui:dev": "bunx vite"
 	},
 	"dependencies": {
@@ -23,6 +23,7 @@
 		"@radix-ui/react-dropdown-menu": "^2.1.15",
 		"@radix-ui/react-label": "^2.1.7",
 		"@radix-ui/react-popover": "^1.1.14",
+		"@radix-ui/react-select": "^2.2.5",
 		"@radix-ui/react-slot": "^1.2.3",
 		"@radix-ui/react-toggle": "^1.1.9",
 		"@radix-ui/react-tooltip": "^1.2.7",

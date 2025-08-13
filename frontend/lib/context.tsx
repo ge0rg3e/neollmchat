@@ -1,4 +1,4 @@
-import type { _AbortController, Appearance, Chat, ChatInput, Model, Session } from './types';
+import type { Settings, Chat, ChatInput, Model, Session, _AbortController } from './types';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import apiClient from './api';
 import db from './dexie';
@@ -6,20 +6,17 @@ import db from './dexie';
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
 interface ContextData {
+	settings: Settings;
+	updateSettings: (path: string, value: any) => void;
+
 	abortControllers: _AbortController[];
 	setAbortControllers: SetState<_AbortController[]>;
 
 	chatInput: ChatInput;
 	setChatInput: SetState<ChatInput>;
 
-	selectedModel: Model;
-	changeModel: (model: Model) => void;
-
 	session: Session;
 	setSession: SetState<Session>;
-
-	appearance: Appearance;
-	setAppearance: (params: Partial<Appearance>) => void;
 
 	showSearch: boolean;
 	setShowSearch: SetState<boolean>;
@@ -48,41 +45,41 @@ export const useApp = () => {
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
 	const [chatInput, setChatInput] = useState<ChatInput>({ text: '', attachments: [] });
 	const [abortControllers, setAbortControllers] = useState<_AbortController[]>([]);
-	const [selectedModel, setSelectedModel] = useState<Model>({} as any);
 	const [session, setSession] = useState<Session>(undefined);
-	const [appearance, _setAppearance] = useState<Appearance>({
-		sidebarClosed: false,
-		sidebarSide: 'left',
-		theme: 'dark'
-	});
 	const [showSearch, setShowSearch] = useState(false);
+	const [settings, setSettings] = useState<Settings>({
+		appearance: {
+			theme: 'dark',
+			sidebarSide: 'left',
+			sidebarClosed: false
+		},
+		transcribeLanguage: 'auto',
+		selectedModel: {} as any
+	});
 
-	const setAppearance = (params: Partial<Appearance>) => {
-		const newAppearance = { ...appearance, ...params };
-		_setAppearance(newAppearance);
-		localStorage.setItem('appearance', JSON.stringify(newAppearance));
-	};
+	const updateSettings = (path: string, value: any) => {
+		setSettings((prev) => {
+			const keys = path.split('.');
+			const newState = { ...prev } as any;
+			let curr = newState;
 
-	const changeModel = (model: Model) => {
-		if (!model) return;
+			for (let i = 0; i < keys.length - 1; i++) {
+				curr[keys[i]] = { ...curr[keys[i]] };
+				curr = curr[keys[i]];
+			}
 
-		localStorage.setItem('selectedModel', model.id);
-		setSelectedModel(model);
+			curr[keys[keys.length - 1]] = value;
+
+			localStorage.setItem('@settings', JSON.stringify(newState));
+
+			return newState;
+		});
 	};
 
 	const onLoad = async () => {
-		// Get appearance
-		const appearanceParsed = JSON.parse(localStorage.getItem('appearance') ?? 'null');
-		if (appearanceParsed) _setAppearance(appearanceParsed);
-
-		// Get selected model
-		const selectedModelId = localStorage.getItem('selectedModel');
-		if (selectedModelId) {
-			const selectedModel = await db.models.get(selectedModelId);
-			changeModel(selectedModel ?? (await db.models.toArray())[0] ?? null);
-		} else {
-			changeModel((await db.models.toArray())[0] ?? null);
-		}
+		// Get settings
+		const settingsParsed = JSON.parse(localStorage.getItem('@settings') ?? 'null');
+		if (settingsParsed) setSettings(settingsParsed);
 
 		// Get session
 		const session = await getSession();
@@ -107,7 +104,7 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 			})
 		]);
 
-		changeModel(data.models[0] ?? null);
+		updateSettings('selectedModel', data.models[0] ?? null);
 	};
 
 	useEffect(() => {
@@ -115,7 +112,7 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 	}, []);
 
 	useEffect(() => {
-		if (appearance.theme === 'dark') {
+		if (settings.appearance.theme === 'dark') {
 			document.documentElement.classList.remove('neollmchat-light');
 			document.documentElement.classList.add('neollmchat-dark');
 			document.documentElement.style.colorScheme = 'dark';
@@ -124,25 +121,10 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 			document.documentElement.classList.add('neollmchat-light');
 			document.documentElement.style.colorScheme = 'light';
 		}
-	}, [appearance.theme]);
+	}, [settings.appearance.theme]);
 
 	return (
-		<AppContext.Provider
-			value={{
-				abortControllers,
-				setAbortControllers,
-				chatInput,
-				setChatInput,
-				selectedModel,
-				changeModel,
-				session,
-				setSession,
-				appearance,
-				setAppearance,
-				showSearch,
-				setShowSearch
-			}}
-		>
+		<AppContext.Provider value={{ settings, updateSettings, abortControllers, setAbortControllers, chatInput, setChatInput, session, setSession, showSearch, setShowSearch }}>
 			{children}
 		</AppContext.Provider>
 	);

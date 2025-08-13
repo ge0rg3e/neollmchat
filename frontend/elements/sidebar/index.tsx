@@ -16,7 +16,7 @@ const SideBar = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const chats = useLiveQuery(() => db.chats.toArray());
-	const { session, appearance, setAppearance, setAbortControllers, setShowSearch } = useApp();
+	const { session, settings, updateSettings, setAbortControllers, setShowSearch } = useApp();
 
 	const handleDeleteChat = async (chatId: string) => {
 		await db.chats.delete(chatId);
@@ -44,7 +44,7 @@ const SideBar = () => {
 			<aside
 				className={twMerge(
 					'w-full max-w-[270px] h-screen p-3 bg-background flex-col flex-between-center z-30 transition-smooth',
-					appearance.sidebarClosed && `fixed top-0 ${appearance.sidebarSide === 'left' ? '!-left-full' : '!-right-full'}`,
+					settings.appearance.sidebarClosed && `fixed top-0 ${settings.appearance.sidebarSide === 'left' ? '!-left-full' : '!-right-full'}`,
 					size.width < 1100 && 'fixed top-0 left-0'
 				)}
 			>
@@ -55,13 +55,13 @@ const SideBar = () => {
 						<div className='bg-[url("/images/logo.png")] bg-center bg-contain bg-no-repeat size-8' />
 
 						<div className="flex-end-center gap-x-0.5">
-							<Tooltip content="Search" side={appearance.sidebarSide === 'left' ? 'right' : 'left'}>
+							<Tooltip content="Search" side={settings.appearance.sidebarSide === 'left' ? 'right' : 'left'}>
 								<Button variant="ghost" size="sm" onClick={() => setShowSearch(true)}>
 									<SearchIcon />
 								</Button>
 							</Tooltip>
 
-							<Tooltip content="New Chat" side={appearance.sidebarSide === 'left' ? 'right' : 'left'}>
+							<Tooltip content="New Chat" side={settings.appearance.sidebarSide === 'left' ? 'right' : 'left'}>
 								<Button variant="ghost" size="sm" onClick={() => navigate('/')}>
 									<PlusIcon />
 								</Button>
@@ -122,9 +122,9 @@ const SideBar = () => {
 						)}
 
 						{/* Close Sidebar */}
-						<Tooltip content="Close" side={appearance.sidebarSide === 'left' ? 'right' : 'left'}>
-							<Button variant="ghost" size="sm" onClick={() => setAppearance({ sidebarClosed: true })}>
-								{appearance.sidebarSide === 'left' ? <PanelLeftCloseIcon /> : <PanelLeftOpenIcon />}
+						<Tooltip content="Close" side={settings.appearance.sidebarSide === 'left' ? 'right' : 'left'}>
+							<Button variant="ghost" size="sm" onClick={() => updateSettings('appearance.sidebarClosed', true)}>
+								{settings.appearance.sidebarSide === 'left' ? <PanelLeftCloseIcon /> : <PanelLeftOpenIcon />}
 							</Button>
 						</Tooltip>
 					</div>

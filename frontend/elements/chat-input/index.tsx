@@ -4,6 +4,7 @@ import { twMerge, useScreen } from '~frontend/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '~frontend/components/button';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { TranscribeTrigger } from './transcribe';
 import { useApp } from '~frontend/lib/context';
 import ModelSelector from './model-selector';
 import { useLocation } from 'react-router';
@@ -75,9 +76,12 @@ const ChatInput = () => {
 							<ModelSelector />
 						</div>
 
-						<Button size="icon" disabled={buttonState.disabled} title={buttonState.label} onClick={handleSend}>
-							<buttonState.icon className="w-4 h-4" />
-						</Button>
+						<div className="flex-end-center gap-x-2">
+							<TranscribeTrigger />
+							<Button size="icon" disabled={buttonState.disabled} title={buttonState.label} onClick={handleSend}>
+								<buttonState.icon className="w-4 h-4" />
+							</Button>
+						</div>
 					</div>
 				</div>
 			</div>

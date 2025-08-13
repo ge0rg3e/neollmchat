@@ -1,25 +1,35 @@
-FROM oven/bun
+# Use Ubuntu as base image
+FROM ubuntu:24.04
 
+# Set working directory
 WORKDIR /app
 
-# Install OpenSSL for Prisma
-RUN apt-get update -y && apt-get install -y openssl
-
-COPY . .
-
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 ENV NODE_ENV=production
+ENV PRISMA_CLIENT_ENGINE_TYPE=binary
+ENV PRISMA_QUERY_ENGINE_BINARY=.prisma
 
-# Install deps
-RUN bun install
+# Install OpenSSL, ffmpeg and Python
+RUN apt-get update && apt-get install -y \
+    sudo \
+    openssl \
+    python3 \
+    python3-pip \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Build frontend
-RUN bun ui:build
-RUN ls -l /app/build/frontend
-RUN chmod -R 755 /app/build/frontend
+# Install Whisper
+RUN pip3 install --no-cache-dir --break-system-packages -U faster-whisper
 
-# Generate db schema
-RUN bun db:generate
+# Copy app build
+COPY /build .
 
-CMD ["bun", "server/index.ts"]
+# Make sure it's executable
+RUN chmod +x /app
 
+# Run app
+CMD ["./app"]
+
+# Expose port
 EXPOSE 8608

@@ -1,6 +1,5 @@
 import { encryptContent } from '../content-encryption';
 import { createModel, deleteModel } from './schema';
-import { Chat, Message } from '~frontend/lib/types';
 import authPlugin from '../auth/plugin';
 import db from '../database';
 import Elysia from 'elysia';

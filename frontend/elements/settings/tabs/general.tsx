@@ -1,3 +1,5 @@
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~frontend/components/select';
+import { transcribeLanguages } from '~frontend/elements/chat-input/transcribe';
 import { Button } from '~frontend/components/button';
 import { useApp } from '~frontend/lib/context';
 import { useNavigate } from 'react-router';
@@ -7,7 +9,7 @@ import { toast } from 'sonner';
 
 const GeneralTab = () => {
 	const navigate = useNavigate();
-	const { session, setSession, setAbortControllers } = useApp();
+	const { session, setSession, setAbortControllers, settings, updateSettings } = useApp();
 
 	const handleLogout = async () => {
 		await apiClient.auth.logout.post();
@@ -31,6 +33,8 @@ const GeneralTab = () => {
 		toast.success('You have successfully deleted all your chats.');
 		navigate('/');
 	};
+
+	const handleChangeLanguage = (language: string) => updateSettings('transcribeLanguage', language);
 
 	if (!session) return null;
 
@@ -64,6 +68,27 @@ const GeneralTab = () => {
 				<Button variant="outline" onClick={handleDeleteChats}>
 					Delete
 				</Button>
+			</div>
+
+			{/* Transcribe Language */}
+			<div className="flex-between-center">
+				<div>
+					<div>Transcribe Language</div>
+					<p className="text-xs text-muted-foreground">Select the preferred language for transcribing.</p>
+				</div>
+				<Select value={settings.transcribeLanguage} onValueChange={handleChangeLanguage}>
+					<SelectTrigger className="w-fit">
+						<SelectValue placeholder="Language" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="auto">Auto</SelectItem>
+						{transcribeLanguages.map((language) => (
+							<SelectItem key={language.id} value={language.id}>
+								{language.label}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</div>
 		</div>
 	);

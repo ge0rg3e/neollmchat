@@ -98,7 +98,7 @@ const formatMessagesAsPDF = async (messages: Message[], chatTitle: string) => {
 
 export const ExportChat = ({ chatId }: { chatId: string }) => {
 	const { size } = useScreen();
-	const { appearance } = useApp();
+	const { settings } = useApp();
 
 	const handleExport = async (format: 'pdf' | 'md' | 'txt') => {
 		const chats = await db.chats.toArray();
@@ -126,7 +126,7 @@ export const ExportChat = ({ chatId }: { chatId: string }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button className={twMerge('absolute top-3', size.width < 890 && '!backdrop-blur-xl', appearance.sidebarSide === 'left' ? 'right-3' : 'left-3')} variant="outline" size="icon">
+				<Button className={twMerge('absolute top-3', size.width < 890 && '!backdrop-blur-xl', settings.appearance.sidebarSide === 'left' ? 'right-3' : 'left-3')} variant="outline" size="icon">
 					<DownloadIcon />
 				</Button>
 			</DropdownMenuTrigger>

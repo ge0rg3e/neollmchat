@@ -1,4 +1,5 @@
 import axios, { isAxiosError } from 'axios';
+import { logError } from '~server/helpers';
 import { getModel } from './helpers';
 import { Readable } from 'stream';
 
@@ -82,7 +83,8 @@ export const llmRequest = async ({ modelId, messages, stream = false, abortContr
 			return { data: { content }, error: null };
 		}
 	} catch (error) {
-		console.log(error);
+		logError('LLM request failed', error);
+
 		if (isAxiosError(error)) {
 			let errorMessage = 'An error occurred.';
 
