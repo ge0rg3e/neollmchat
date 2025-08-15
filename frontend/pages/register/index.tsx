@@ -63,7 +63,7 @@ const Register = () => {
 				</div>
 
 				{/* Right */}
-				<div className="size-full hidden lg:flex flex-col flex-center-center bg-muted bg-cover bg-center bg-no-repeat bg-[url('/images/auth-bg.png')]"></div>
+				<div className="size-full hidden lg:flex flex-col flex-center-center bg-muted bg-cover bg-center bg-no-repeat bg-[url('/images/auth-bg-2.jpg')] [box-shadow:rgb(0_0_0)_0px_44px_73px_3px_inset,_rgba(0,_0,_0,_11.3)_0px_25px_36px_-18px_inset]"></div>
 			</div>
 		</Layout>
 	);

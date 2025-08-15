@@ -1,24 +1,32 @@
 type NullOrUndefined<T> = T | null | undefined;
 
+export type Model = {
+	id: string;
+	model: string;
+	provider: string;
+	attributes: {
+		imageUpload: boolean;
+		imageGeneration: boolean;
+		thinkingMode: boolean;
+	};
+};
+
 export type Settings = {
 	appearance: {
 		theme: 'dark' | 'light';
 		sidebarSide: 'left' | 'right';
 		sidebarClosed: boolean;
 	};
-	transcribeLanguage: string;
+	transcribe: {
+		language: string;
+		autoSend: boolean;
+	};
 	selectedModel: Model;
 };
 
 export type ActiveRequest = {
 	requestId: string;
 	chatId: string;
-};
-
-export type Model = {
-	id: string;
-	model: string;
-	provider: string;
 };
 
 export type Attachment = {

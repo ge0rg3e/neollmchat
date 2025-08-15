@@ -1,42 +1,40 @@
-import { Popover, PopoverContent, PopoverTrigger } from '~frontend/components/popover';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~frontend/components/dropdown-menu';
+import { ModelAttributes } from '../settings/tabs/models';
+import { ChevronDownIcon, PlusIcon } from 'lucide-react';
 import { Button } from '~frontend/components/button';
-import { truncateString } from '~frontend/lib/utils';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { ChevronDownIcon } from 'lucide-react';
 import { useApp } from '~frontend/lib/context';
+import { useNavigate } from 'react-router';
 import db from '~frontend/lib/dexie';
-import { useState } from 'react';
 
 const ModelSelector = () => {
+	const navigate = useNavigate();
 	const { settings, updateSettings } = useApp();
-	const [open, setOpen] = useState(false);
 	const models = useLiveQuery(() => db.models.toArray());
 
 	return (
-		<Popover onOpenChange={setOpen} open={open}>
-			<PopoverTrigger asChild>
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" className="hover:!bg-primary/10">
 					{/* @ts-ignore */}
-					{models?.length > 0 ? settings.selectedModel.model ?? 'No model selected' : 'No models yet'} <ChevronDownIcon />
+					{models?.length > 0 ? settings.selectedModel?.model ?? 'No model selected' : 'No models yet'} <ChevronDownIcon />
 				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="!w-full !min-w-[250px] !max-w-[250px] p-1">
+			</DropdownMenuTrigger>
+			<DropdownMenuContent>
 				{models?.map((model, index) => (
-					<div
-						key={index}
-						className="w-full h-8 px-3 flex-between-center cursor-pointer rounded-sm hover:bg-primary/10"
-						onClick={() => {
-							updateSettings('selectedModel', model);
-							setOpen(false);
-						}}
-					>
-						<div className="text-sm" title={model.model}>
-							{truncateString(model.model, 26)}
-						</div>
-					</div>
+					<DropdownMenuItem key={index} className="flex justify-between items-center" onClick={() => updateSettings('selectedModel', model)}>
+						<div className="text-sm">{model.model}</div>
+						<ModelAttributes attributes={model.attributes} />
+					</DropdownMenuItem>
 				))}
-			</PopoverContent>
-		</Popover>
+
+				{models?.length === 0 && (
+					<DropdownMenuItem onClick={() => navigate('?settings=models')}>
+						<PlusIcon /> Add a model
+					</DropdownMenuItem>
+				)}
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
 

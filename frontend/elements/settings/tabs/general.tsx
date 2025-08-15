@@ -1,5 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~frontend/components/select';
 import { transcribeLanguages } from '~frontend/elements/chat-input/transcribe';
+import { Switch } from '~frontend/components/switch';
 import { Button } from '~frontend/components/button';
 import { useApp } from '~frontend/lib/context';
 import { useNavigate } from 'react-router';
@@ -33,8 +34,6 @@ const GeneralTab = () => {
 		toast.success('You have successfully deleted all your chats.');
 		navigate('/');
 	};
-
-	const handleChangeLanguage = (language: string) => updateSettings('transcribeLanguage', language);
 
 	if (!session) return null;
 
@@ -76,7 +75,7 @@ const GeneralTab = () => {
 					<div>Transcribe Language</div>
 					<p className="text-xs text-muted-foreground">Select the preferred language for transcribing.</p>
 				</div>
-				<Select value={settings.transcribeLanguage} onValueChange={handleChangeLanguage}>
+				<Select value={settings.transcribe.language} onValueChange={(language) => updateSettings('transcribe.language', language)}>
 					<SelectTrigger className="w-fit">
 						<SelectValue placeholder="Language" />
 					</SelectTrigger>
@@ -89,6 +88,15 @@ const GeneralTab = () => {
 						))}
 					</SelectContent>
 				</Select>
+			</div>
+
+			{/* Transcribe Auto Send */}
+			<div className="flex-between-center">
+				<div>
+					<div>Transcribe Auto Send</div>
+					<p className="text-xs text-muted-foreground">Automatically send an LLM request after transcription is finished.</p>
+				</div>
+				<Switch checked={settings.transcribe.autoSend} onCheckedChange={(autoSend) => updateSettings('transcribe.autoSend', autoSend)} />
 			</div>
 		</div>
 	);

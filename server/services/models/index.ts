@@ -14,11 +14,11 @@ const modelsService = new Elysia({ prefix: '/api' })
 			const ecryptedApiKey = await encryptContent(body.apiKey);
 
 			const newModel = await db.model.create({
-				data: { model: body.model, provider: body.provider, apiUrl: body.apiUrl, apiKey: ecryptedApiKey, createdBy: user.id },
-				select: { id: true, model: true, provider: true }
+				data: { model: body.model, provider: body.provider, apiUrl: body.apiUrl, apiKey: ecryptedApiKey, attributes: JSON.stringify(body.attributes), createdBy: user.id },
+				select: { id: true, model: true, provider: true, attributes: true }
 			});
 
-			return newModel;
+			return { ...newModel, attributes: JSON.parse(newModel.attributes) };
 		},
 		{ body: createModel }
 	)

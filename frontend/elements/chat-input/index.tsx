@@ -1,8 +1,8 @@
 import { ArrowDownIcon, SendHorizontalIcon, SquareIcon } from 'lucide-react';
 import { AttachmentsPreview, AttachmentsTrigger } from './attachments';
-import { twMerge, useScreen } from '~frontend/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '~frontend/components/button';
+import { cn, useScreen } from '~frontend/lib/utils';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { TranscribeTrigger } from './transcribe';
 import { useApp } from '~frontend/lib/context';
@@ -23,24 +23,27 @@ const ChatInput = () => {
 
 	const buttonState = useMemo(() => {
 		const activeRequest = activeRequests?.find((r) => r.chatId === chatId);
-		if (activeRequest) return { disabled: false, icon: SquareIcon, label: 'Stop' };
-		if (!chatInput.text.trim()) return { disabled: true, icon: SendHorizontalIcon, label: 'Send' };
-		return { disabled: false, icon: SendHorizontalIcon, label: 'Send' };
+		if (activeRequest) return { disabled: false, icon: SquareIcon };
+		if (!chatInput.text.trim()) return { disabled: true, icon: SendHorizontalIcon };
+		return { disabled: false, icon: SendHorizontalIcon };
 	}, [chatId, chatInput, activeRequests]);
 
 	useEffect(() => {
 		const chatMessages = document.getElementById('chat-messages');
 		if (!chatMessages) return;
 
-		chatMessages.addEventListener('scroll', () => {
+		const handleScroll = () => {
 			const state = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight;
 			setShowScrollToBottom(!state);
-		});
+		};
+
+		chatMessages.addEventListener('scroll', handleScroll);
+		return () => chatMessages.removeEventListener('scroll', handleScroll);
 	}, []);
 
 	return (
-		<div className={twMerge('w-full flex items-center justify-center', pathname.includes('/c') && 'fixed bottom-5 max-w-[calc(100vw-270px)]', size.width < 1100 && 'max-w-full px-5')}>
-			<div className="w-full max-w-[765px] max-h-[200px] p-2 rounded-3xl bg-accent/50 backdrop-blur-xl">
+		<div className={cn('w-full flex items-center justify-center', pathname.includes('/c') && 'fixed bottom-5 max-w-[calc(100vw-270px)]', size.width < 1100 && 'max-w-full px-5')}>
+			<div className="w-full max-w-[765px] max-h-[300px] p-2 rounded-3xl bg-accent/50 backdrop-blur-xl">
 				{showScrollToBottom && (
 					<Button
 						onClick={() => {
@@ -48,7 +51,7 @@ const ChatInput = () => {
 							if (!chatMessages) return;
 							chatMessages.scroll({ top: chatMessages.scrollHeight, behavior: 'smooth' });
 						}}
-						className=" absolute bottom-40 right-0"
+						className="absolute bottom-40 right-0"
 						variant="outline"
 						size="icon"
 					>
@@ -59,8 +62,15 @@ const ChatInput = () => {
 				<div className="flex flex-col w-full h-full rounded-2xl bg-accent/70">
 					<AttachmentsPreview />
 					<textarea
-						className="w-full h-full p-3 pb-0 bg-transparent border-none outline-none resize-none rounded-xl text-foreground placeholder:text-muted-foreground"
-						onChange={(e) => setChatInput((prev) => ({ ...prev, text: e.target.value }))}
+						className="w-full p-3 pb-0 bg-transparent border-none outline-none resize-none rounded-xl text-foreground placeholder:text-muted-foreground"
+						onChange={(e) => {
+							setChatInput((prev) => ({ ...prev, text: e.target.value }));
+
+							// Auto resize
+							const textarea = e.target;
+							textarea.style.height = 'auto';
+							textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+						}}
 						placeholder="Type your prompt here..."
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !e.shiftKey) {
@@ -78,7 +88,7 @@ const ChatInput = () => {
 
 						<div className="flex-end-center gap-x-2">
 							<TranscribeTrigger />
-							<Button size="icon" disabled={buttonState.disabled} title={buttonState.label} onClick={handleSend}>
+							<Button size="icon" disabled={buttonState.disabled} onClick={handleSend}>
 								<buttonState.icon className="w-4 h-4" />
 							</Button>
 						</div>

@@ -4,6 +4,7 @@ import { Button } from '~frontend/components/button';
 import { useApp } from '~frontend/lib/context';
 import apiClient from '~frontend/lib/api';
 import { toast } from 'sonner';
+import { Tooltip } from '~frontend/components/tooltip';
 
 export const TranscribeTrigger = () => {
 	const { setChatInput, settings } = useApp();
@@ -132,7 +133,7 @@ export const TranscribeTrigger = () => {
 			const audioFile = new File([audioBlob], 'recording.webm', { type: 'audio/webm' });
 
 			try {
-				const { data } = await apiClient.transcribe.post({ recording: audioFile, language: settings.transcribeLanguage });
+				const { data } = await apiClient.transcribe.post({ recording: audioFile, language: settings.transcribe.language });
 
 				if (data?.result) {
 					setChatInput((prev) => ({ ...prev, text: prev.text + data.result }));
@@ -172,20 +173,26 @@ export const TranscribeTrigger = () => {
 			/>
 
 			{!isListening && (
-				<Button variant="ghost" size="icon" title="Transcribe" className="hover:!bg-primary/10" disabled={isProcessing} onClick={startTranscribing}>
-					{isProcessing ? <LoaderCircleIcon className="animate-spin" /> : <MicIcon />}
-				</Button>
+				<Tooltip content="Transcribe">
+					<Button variant="ghost" size="icon" title="Transcribe" className="hover:!bg-primary/10" disabled={isProcessing} onClick={startTranscribing}>
+						{isProcessing ? <LoaderCircleIcon className="animate-spin" /> : <MicIcon />}
+					</Button>
+				</Tooltip>
 			)}
 
 			{isListening && (
 				<Fragment>
-					<Button variant="ghost" size="icon" title="Cancel" className="hover:!bg-primary/10" onClick={cancelTranscribing}>
-						<XIcon />
-					</Button>
+					<Tooltip content="Cancel">
+						<Button variant="ghost" size="icon" title="Cancel" className="hover:!bg-primary/10" onClick={cancelTranscribing}>
+							<XIcon />
+						</Button>
+					</Tooltip>
 
-					<Button variant="ghost" size="icon" title="Process" className="hover:!bg-primary/10" onClick={processTranscribing}>
-						<CheckIcon />
-					</Button>
+					<Tooltip content="Process">
+						<Button variant="ghost" size="icon" title="Process" className="hover:!bg-primary/10" onClick={processTranscribing}>
+							<CheckIcon />
+						</Button>
+					</Tooltip>
 				</Fragment>
 			)}
 		</Fragment>

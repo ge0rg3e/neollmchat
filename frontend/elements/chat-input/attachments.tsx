@@ -1,3 +1,4 @@
+import { Tooltip } from '~frontend/components/tooltip';
 import type { Attachment } from '~frontend/lib/types';
 import { Button } from '~frontend/components/button';
 import { LinkIcon, XIcon } from 'lucide-react';
@@ -6,7 +7,7 @@ import { Fragment, useRef } from 'react';
 import { toast } from 'sonner';
 
 export const AttachmentsTrigger = () => {
-	const { chatInput, setChatInput } = useApp();
+	const { chatInput, setChatInput, settings } = useApp();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,9 +41,18 @@ export const AttachmentsTrigger = () => {
 
 	return (
 		<Fragment>
-			<Button variant="ghost" size="icon" title="Attach a file" className="hover:!bg-primary/10" onClick={() => fileInputRef.current?.click()}>
-				<LinkIcon />
-			</Button>
+			<Tooltip content="Attach a file">
+				<Button
+					disabled={!settings.selectedModel || !settings.selectedModel?.attributes?.imageUpload}
+					onClick={() => fileInputRef.current?.click()}
+					className="hover:!bg-primary/10"
+					title="Attach a file"
+					variant="ghost"
+					size="icon"
+				>
+					<LinkIcon />
+				</Button>
+			</Tooltip>
 
 			<input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} accept=".png,.jpg,.jpeg" />
 		</Fragment>

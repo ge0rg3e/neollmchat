@@ -1,5 +1,7 @@
+import { Button } from '~frontend/components/button';
 import packageJson from '~server/../package.json';
 import { useEffect, useState } from 'react';
+import { BugIcon } from 'lucide-react';
 
 const AboutTab = () => {
 	const [isLatestVersion, setIsLatestVersion] = useState<boolean | undefined>(undefined);
@@ -29,6 +31,12 @@ const AboutTab = () => {
 						Ge0rg3e
 					</a>
 				</p>
+
+				<Button variant="destructive" asChild>
+					<a href="https://github.com/ge0rg3e/neollmchat/issues/new" target="_blank">
+						<BugIcon /> Report bug
+					</a>
+				</Button>
 			</div>
 		</div>
 	);

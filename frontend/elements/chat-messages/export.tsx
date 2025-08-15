@@ -1,10 +1,11 @@
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '~frontend/components/dropdown-menu';
 import type { Message, Attachment } from '~frontend/lib/types';
 import { Button } from '~frontend/components/button';
-import { twMerge, useScreen } from '~frontend/lib/utils';
+import { cn, useScreen } from '~frontend/lib/utils';
+import { useApp } from '~frontend/lib/context';
 import { DownloadIcon } from 'lucide-react';
 import db from '~frontend/lib/dexie';
-import { useApp } from '~frontend/lib/context';
+import { Tooltip } from '~frontend/components/tooltip';
 
 const downloadFile = (filename: string, content: string | Blob) => {
 	const blob = typeof content === 'string' ? new Blob([content], { type: 'text/plain' }) : content;
@@ -126,9 +127,11 @@ export const ExportChat = ({ chatId }: { chatId: string }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button className={twMerge('absolute top-3', size.width < 890 && '!backdrop-blur-xl', settings.appearance.sidebarSide === 'left' ? 'right-3' : 'left-3')} variant="outline" size="icon">
-					<DownloadIcon />
-				</Button>
+				<Tooltip content="Export" side={settings.appearance.sidebarSide === 'left' ? 'right' : 'left'}>
+					<Button className={cn('absolute top-3', size.width < 890 && '!backdrop-blur-xl', settings.appearance.sidebarSide === 'left' ? 'right-3' : 'left-3')} variant="outline" size="icon">
+						<DownloadIcon />
+					</Button>
+				</Tooltip>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
 				<DropdownMenuItem onClick={() => handleExport('pdf')}>PDF</DropdownMenuItem>

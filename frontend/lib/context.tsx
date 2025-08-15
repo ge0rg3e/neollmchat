@@ -53,7 +53,10 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 			sidebarSide: 'left',
 			sidebarClosed: false
 		},
-		transcribeLanguage: 'auto',
+		transcribe: {
+			language: 'auto',
+			autoSend: false
+		},
 		selectedModel: {} as any
 	});
 
@@ -113,12 +116,10 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
 	useEffect(() => {
 		if (settings.appearance.theme === 'dark') {
-			document.documentElement.classList.remove('neollmchat-light');
-			document.documentElement.classList.add('neollmchat-dark');
+			document.documentElement.classList.add('dark');
 			document.documentElement.style.colorScheme = 'dark';
 		} else {
-			document.documentElement.classList.remove('neollmchat-dark');
-			document.documentElement.classList.add('neollmchat-light');
+			document.documentElement.classList.remove('dark');
 			document.documentElement.style.colorScheme = 'light';
 		}
 	}, [settings.appearance.theme]);

@@ -2,7 +2,7 @@ import { MoonIcon, PanelLeft, PanelRight, SunIcon } from 'lucide-react';
 import { Tooltip } from '~frontend/components/tooltip';
 import { Button } from '~frontend/components/button';
 import { useApp } from '~frontend/lib/context';
-import { twMerge } from '~frontend/lib/utils';
+import { cn } from '~frontend/lib/utils';
 
 const AppearanceTab = () => {
 	const { settings, updateSettings } = useApp();
@@ -18,13 +18,13 @@ const AppearanceTab = () => {
 
 				<div className="flex-end-center gap-x-1">
 					<Tooltip content="Dark Theme">
-						<Button className={twMerge(settings.appearance.theme === 'dark' && 'bg-accent')} variant="ghost" size="icon" onClick={() => updateSettings('appearance.theme', 'dark')}>
+						<Button className={cn(settings.appearance.theme === 'dark' && 'bg-accent')} variant="ghost" size="icon" onClick={() => updateSettings('appearance.theme', 'dark')}>
 							<MoonIcon />
 						</Button>
 					</Tooltip>
 
 					<Tooltip content="Light Theme">
-						<Button className={twMerge(settings.appearance.theme === 'light' && 'bg-accent')} variant="ghost" size="icon" onClick={() => updateSettings('appearance.theme', 'light')}>
+						<Button className={cn(settings.appearance.theme === 'light' && 'bg-accent')} variant="ghost" size="icon" onClick={() => updateSettings('appearance.theme', 'light')}>
 							<SunIcon />
 						</Button>
 					</Tooltip>
@@ -40,19 +40,14 @@ const AppearanceTab = () => {
 
 				<div className="flex-end-center gap-x-1">
 					<Tooltip content="Left">
-						<Button
-							className={twMerge(settings.appearance.sidebarSide === 'left' && 'bg-accent')}
-							variant="ghost"
-							size="icon"
-							onClick={() => updateSettings('appearance.sidebarSide', 'left')}
-						>
+						<Button className={cn(settings.appearance.sidebarSide === 'left' && 'bg-accent')} variant="ghost" size="icon" onClick={() => updateSettings('appearance.sidebarSide', 'left')}>
 							<PanelLeft />
 						</Button>
 					</Tooltip>
 
 					<Tooltip content="Right">
 						<Button
-							className={twMerge(settings.appearance.sidebarSide === 'right' && 'bg-accent')}
+							className={cn(settings.appearance.sidebarSide === 'right' && 'bg-accent')}
 							onClick={() => updateSettings('appearance.sidebarSide', 'right')}
 							variant="ghost"
 							size="icon"

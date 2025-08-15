@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~frontend/components/dialog';
 import { InfoIcon, PackageIcon, PaintBucketIcon, Settings2Icon } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
-import { twMerge } from '~frontend/lib/utils';
+import { cn } from '~frontend/lib/utils';
 import { useEffect } from 'react';
 
 // Tabs
@@ -77,7 +77,7 @@ const Settings = () => {
 						{tabs.map((tab, index) => {
 							return (
 								<button
-									className={twMerge(
+									className={cn(
 										'w-full h-9 text-sm rounded-lg px-3 flex-start-center gap-x-2 cursor-pointer transition-smooth hover:bg-accent',
 										settingsTab === tab.id && 'bg-accent'
 									)}

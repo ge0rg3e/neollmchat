@@ -23,6 +23,7 @@ model Model {
     provider  String
     apiUrl    String   @map("api_url")
     apiKey    String   @map("api_key")
+    attributes String
     createdBy String   @map("created_by")
     createdAt DateTime @default(now()) @map("created_at")
 }
