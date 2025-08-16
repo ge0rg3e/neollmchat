@@ -1,4 +1,5 @@
-import { BrainIcon, ImageIcon, ImageUpIcon, Trash2Icon } from 'lucide-react';
+import { BrainIcon, BrushCleaningIcon, ImageIcon, ImageUpIcon, Trash2Icon } from 'lucide-react';
+import { Textarea } from '~frontend/components/textarea';
 import { Tooltip } from '~frontend/components/tooltip';
 import { Button } from '~frontend/components/button';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -28,7 +29,7 @@ export const modelAttributes = [
 ];
 
 const ModelsTab = () => {
-	const { session, updateSettings } = useApp();
+	const { session, settings, updateSettings } = useApp();
 	const models = useLiveQuery(() => db.models.toArray());
 
 	const handleDeleteModel = async (id: string) => {
@@ -76,6 +77,25 @@ const ModelsTab = () => {
 				))}
 
 				{models?.length === 0 && <p className="text-center text-sm text-muted-foreground">No models yet.</p>}
+			</div>
+
+			<div className="space-y-2">
+				<div className="flex-between-center">
+					<h2 className="font-medium">Custom Instructions</h2>
+
+					<Tooltip side="left" content="Clear">
+						<Button variant="ghost" size="icon" disabled={settings.customInstructions === ''} onClick={() => updateSettings('customInstructions', '')}>
+							<BrushCleaningIcon className="size-4" />
+						</Button>
+					</Tooltip>
+				</div>
+
+				<Textarea
+					onChange={(e) => updateSettings('customInstructions', e.target.value)}
+					placeholder="Custom instructions for the model."
+					value={settings.customInstructions}
+					className="max-h-[300px]"
+				/>
 			</div>
 		</div>
 	);

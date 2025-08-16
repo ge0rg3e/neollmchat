@@ -57,7 +57,8 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 			language: 'auto',
 			autoSend: false
 		},
-		selectedModel: {} as any
+		selectedModel: {} as any,
+		customInstructions: ''
 	});
 
 	const updateSettings = (path: string, value: any) => {

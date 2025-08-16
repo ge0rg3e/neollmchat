@@ -66,7 +66,7 @@ const useChatApi = () => {
 
 		try {
 			const response = await apiClient.chat.post(
-				{ chatId: targetChatId, requestId, model: { id: settings.selectedModel.id }, messages: updatedMessages },
+				{ chatId: targetChatId, requestId, model: { id: settings.selectedModel.id, customInstructions: settings.customInstructions }, messages: updatedMessages },
 				{ fetch: { signal: abortController.signal } }
 			);
 			if (!response.data) return;
@@ -151,7 +151,7 @@ const useChatApi = () => {
 					{
 						chatId,
 						requestId,
-						model: { id: settings.selectedModel.id },
+						model: { id: settings.selectedModel.id, customInstructions: settings.customInstructions },
 						messages: messagesToKeep
 					},
 					{ fetch: { signal: abortController.signal } }
@@ -223,7 +223,7 @@ const useChatApi = () => {
 					{
 						chatId,
 						requestId,
-						model: { id: settings.selectedModel.id },
+						model: { id: settings.selectedModel.id, customInstructions: settings.customInstructions },
 						messages: messagesToKeep
 					},
 					{ fetch: { signal: abortController.signal } }

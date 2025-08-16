@@ -22,6 +22,7 @@ export type Settings = {
 		autoSend: boolean;
 	};
 	selectedModel: Model;
+	customInstructions: string;
 };
 
 export type ActiveRequest = {

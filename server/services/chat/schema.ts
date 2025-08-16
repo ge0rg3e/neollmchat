@@ -19,7 +19,8 @@ export const chatPost = t.Object({
 	chatId: t.String(),
 	requestId: t.String(),
 	model: t.Object({
-		id: t.String()
+		id: t.String(),
+		customInstructions: t.String({ default: '' })
 	}),
 	messages: messages
 });

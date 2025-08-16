@@ -47,7 +47,10 @@ const chatService = new Elysia({ prefix: '/api' })
 				messages: [
 					{
 						role: 'system',
-						content: [{ type: 'text', text: SYSTEM_PROMPT }]
+						content: [
+							{ type: 'text', text: SYSTEM_PROMPT },
+							{ type: 'text', text: body.model.customInstructions }
+						]
 					},
 					...formattedMessages
 				],
